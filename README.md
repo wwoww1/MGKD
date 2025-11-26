@@ -1,13 +1,18 @@
 # MGKD
 This repo provides a demo for the paper "Multi-Granularity Knowledge Distillation via Subspace-aware Representation" on the CIFAR-100 dataset.
 # Requirements
-
 python 3.9.12 (Anaconda version >=5.3.1 is recommended)
+
 torch (torch version >= 2.8.0.dev20250429+cu128 is recommended)
+
 torchaudio (torchaudio version >= 2.6.0.dev20250429+cu128 is recommended)
+
 torchvision (torchvision version >= 0.22.0.dev20250429+cu128 is recommended)
+
 pandas
+
 numpy
+
 NVIDIA GPU + CUDA CuDNN
 
 # Running
