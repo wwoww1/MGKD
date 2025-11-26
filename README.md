@@ -1,2 +1,2 @@
 # MGKD
-This repository contains the official source code for the paper "Multi-Granularity Knowledge Distillation via Subspace-aware Representation". The codebase is under active update.
+This repo provides a demo for the paper "Multi-Granularity Knowledge Distillation via Subspace-aware Representation" on the CIFAR-100 dataset.
