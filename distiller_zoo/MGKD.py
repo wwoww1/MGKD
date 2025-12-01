@@ -10,25 +10,40 @@ class SimAM(nn.Module):
         super(SimAM, self).__init__()
         self.lambda_val = lambda_val
 
-    def forward(self, x):
-        # x: (N, C, H, W)
-                
-        n = x.shape[2] * x.shape[3] - 1
-        mean = x.mean(dim=[2,3], keepdim=True)
+    @staticmethod
+    def _prod_shape(x, dims):
+        n = 1
+        for d in dims:
+            n *= x.shape[d]
+        return n
+
+    def _compute_attention(self, x: torch.Tensor) -> torch.Tensor:
+        # x: (N,C,H,W) or (N,C,D,H,W)
+        assert x.dim() in (4, 5), f"Expect 4D/5D tensor, got {x.shape}"
+        spatial_dims = tuple(range(2, x.dim()))
+        device, dtype = x.device, x.dtype
+
+        n = torch.tensor(self._prod_shape(x, spatial_dims) - 1, device=device, dtype=dtype)
+        n = torch.clamp(n, min=torch.tensor(1.0, device=device, dtype=dtype))
+
+        mean = x.mean(dim=spatial_dims, keepdim=True)
         d = (x - mean).pow(2)
-        v = d.sum(dim=[2,3], keepdim=True) / n
-        e_inv = d / (4 * (v + self.lambda_val)) + 0.5
+        
+        v = d.sum(dim=spatial_dims, keepdim=True) / n
+        
+        lam = self.lambda_val
+        v = torch.clamp(v, min=lam)
+        e_inv = d / (4.0 * (v + lam)) + 0.5
         attn = torch.sigmoid(e_inv)
-        return x * attn, attn  
+        return attn
 
-    def get_attention(self, x):
+    def forward(self, x: torch.Tensor):
+        attn = self._compute_attention(x)
+        return x * attn, attn
 
-        n = x.shape[2] * x.shape[3] - 1
-        mean = x.mean(dim=[2,3], keepdim=True)
-        d = (x - mean).pow(2)
-        v = d.sum(dim=[2,3], keepdim=True) / n
-        e_inv = d / (4 * (v + self.lambda_val)) + 0.5
-        return torch.sigmoid(e_inv)
+    @torch.no_grad()
+    def get_attention(self, x: torch.Tensor):
+        return self._compute_attention(x)
     
 class Masker(nn.Module):
     def __init__(self, in_dim, teacher_dim, middle=None, k=256):
