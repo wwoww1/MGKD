@@ -193,7 +193,7 @@ def main():
     model_s = wrapper_sp_s(model_s_base, feat_dim=opt.feat_dim, class_num=n_cls).cuda()
 
     module_list = nn.ModuleList([model_s_base, model_t_base])
-    trainable_list = nn.ModuleList([model_s_base])
+    trainable_list = nn.ModuleList([model_s])
 
     criterion_cls = nn.CrossEntropyLoss().cuda()
     criterion_masker = MaskedDistillKL(feature_dim=feat_s[-1].shape[1], teacher_dim = feat_t[-1].shape[1], num_classes=n_cls, T=opt.kd_T).cuda()
