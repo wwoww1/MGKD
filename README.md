@@ -1,5 +1,6 @@
 # MGKD
 This repo provides a demo for the paper "Multi-Granularity Knowledge Distillation via Subspace-aware Representation" on the CIFAR-100 dataset.
+![image](https://github.com/wwoww1/MGKD/blob/main/fig1.jpg)
 # Requirements
 python 3.9.12 (Anaconda version >=5.3.1 is recommended)
 
